@@ -37,7 +37,7 @@ const _UserListItem: FC<Props> = ({ user, onEdit, onDelete }) => {
           {fullName}
           {!!roleName && (
             <Text
-              color={colors.primary[500]}
+              color={colors.primary}
               size={14}
               weight="bold"
             >{` - ${roleName}`}</Text>

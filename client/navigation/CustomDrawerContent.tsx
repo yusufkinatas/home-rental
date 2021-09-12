@@ -32,7 +32,7 @@ export const CustomDrawerContent = ({ user, onLogout, ...rest }: Props) => {
             {user?.fullName}
           </Text>
           {!!roleName && (
-            <Text color={colors.primary[500]} weight="bold" size={14}>
+            <Text color={colors.primary} weight="bold" size={14}>
               {roleName}
             </Text>
           )}

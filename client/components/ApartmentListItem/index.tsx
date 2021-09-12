@@ -30,7 +30,7 @@ const _ApartmentListItem: FC<Props> = ({ apartment }) => {
       <Text
         weight="bold"
         size={14}
-        color={apartment.isRented ? colors.success : colors.primary[500]}
+        color={apartment.isRented ? colors.success : colors.primary}
       >{`$${apartment.monthlyPrice}`}</Text>
     </PressableOpacity>
   );

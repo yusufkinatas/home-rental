@@ -161,14 +161,14 @@ const styles = StyleSheet.create({
   },
   fakeMarker: { position: 'absolute' },
   fakeMarkerTitle: {
-    backgroundColor: colors.primary[500],
+    backgroundColor: colors.primary,
     borderRadius: 4,
     paddingHorizontal: 6,
     paddingVertical: 4,
     maxWidth: layout.width * 0.5
   },
   fakeMarkerTriangle: {
-    backgroundColor: colors.primary[500],
+    backgroundColor: colors.primary,
     marginTop: -4,
     width: 8,
     height: 8,

@@ -9,14 +9,7 @@ export const colors = {
     600: '#373737',
     1000: '#0B0B0B'
   },
-  primary: {
-    100: '#F5F3F7',
-    200: '#E8DDF6',
-    300: '#C8A0F8',
-    400: '#8557BC',
-    500: '#5C1FA6'
-  },
-  info: '#2854CC',
+  primary: '#6F1E51',
   success: '#28BD57',
   danger: '#FA4753'
 };

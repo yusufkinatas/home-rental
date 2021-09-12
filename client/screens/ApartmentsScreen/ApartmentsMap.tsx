@@ -40,7 +40,7 @@ export const ApartmentsMap = () => {
             apartmentId: apartment._id
           });
         }}
-        color={apartment.isRented ? colors.success : colors.primary[500]}
+        color={apartment.isRented ? colors.success : colors.primary}
       />
     ));
   }, [apartments]);

@@ -18,7 +18,7 @@ const _MapMarker: FC<Props> = ({
   coordinate,
   title,
   onPress,
-  color = colors.primary[500]
+  color = colors.primary
 }) => {
   return (
     <Marker coordinate={coordinate} onPress={onPress}>

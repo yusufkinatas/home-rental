@@ -7,7 +7,7 @@ export const navigationTheme: Theme = {
     border: colors.neutral[200],
     card: colors.neutral[100],
     notification: colors.danger,
-    primary: colors.primary[500],
+    primary: colors.primary,
     text: colors.neutral[600]
   },
   dark: false

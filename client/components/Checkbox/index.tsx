@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     marginRight: 16
   },
   checked: {
-    backgroundColor: colors.primary[500],
-    borderColor: colors.primary[500]
+    backgroundColor: colors.primary,
+    borderColor: colors.primary
   }
 });
