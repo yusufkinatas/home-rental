@@ -5,7 +5,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Checkbox } from '@components/Checkbox';
 import Spacer from '@components/Spacer';
-import { useProfile } from '@contexts/profile';
 import { useApartments } from '@contexts/apartments';
 import { Button } from '@components/Button';
 import { SearchApartmentQueryParams } from '@services/ApartmentService';
@@ -14,6 +13,8 @@ import { UserRole } from 'types';
 import { Input } from '@components/Input';
 import { Label } from './Label';
 import { ruleMin1, ruleOnlyDigit } from '@constants/formRules';
+import { useAppSelector } from '@hooks/useAppSelector';
+import { selectUser } from '@slices/authSlice';
 
 interface FormValues {
   showOnlyMine: boolean;
@@ -26,7 +27,7 @@ interface FormValues {
 }
 
 export const ApartmentFiltersScreen = () => {
-  const { user } = useProfile();
+  const user = useAppSelector(selectUser);
   const { setSearchParams, searchParams } = useApartments();
   const navigation = useNavigation();
 

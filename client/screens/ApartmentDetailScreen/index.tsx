@@ -12,7 +12,8 @@ import { colors } from '@constants/colors';
 import { formatDate } from '@utils/formatDate';
 import { useApartments } from '@contexts/apartments';
 import { message } from '@utils/message';
-import { useProfile } from '@contexts/profile';
+import { useAppSelector } from '@hooks/useAppSelector';
+import { selectUser } from '@slices/authSlice';
 
 export const ApartmentDetailScreen = ({
   navigation,
@@ -20,7 +21,7 @@ export const ApartmentDetailScreen = ({
     params: { apartmentId }
   }
 }: ScreenProp<'ApartmentDetail'>) => {
-  const { user } = useProfile();
+  const user = useAppSelector(selectUser);
   const { findApartmentById, deleteApartment } = useApartments();
   const apartment = findApartmentById(apartmentId);
 

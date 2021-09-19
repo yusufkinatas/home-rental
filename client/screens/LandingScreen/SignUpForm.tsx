@@ -3,10 +3,11 @@ import { Checkbox } from '@components/Checkbox';
 import { Input } from '@components/Input';
 import Spacer from '@components/Spacer';
 import { Text } from '@components/Text';
-import { useProfile } from '@contexts/profile';
+import { useAppDispatch } from '@hooks/useAppDispatch';
 import { useNavigation } from '@react-navigation/core';
 import { LocalStorageService } from '@services/LocalStorageService';
 import { UserService } from '@services/UserService';
+import { setUser } from '@slices/authSlice';
 import { message } from '@utils/message';
 import React, { FC, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -30,7 +31,7 @@ export const SignUpForm: FC<Props> = ({ toggleForm }) => {
   });
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  const { setUser } = useProfile();
+  const dispatch = useAppDispatch();
 
   const onSubmit: SubmitHandler<FormValues> = async ({
     email,
@@ -47,7 +48,7 @@ export const SignUpForm: FC<Props> = ({ toggleForm }) => {
         role: isRealtor ? UserRole.REALTOR : UserRole.CLIENT
       });
 
-      setUser(user);
+      dispatch(setUser(user));
       LocalStorageService.SaveObj('TOKEN', token);
       navigation.reset({ routes: [{ name: 'Drawer' }] });
     } catch (error: any) {

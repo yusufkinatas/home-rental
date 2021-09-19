@@ -10,7 +10,8 @@
       "@services/*": ["services/*"],
       "@screens/*": ["screens/*"],
       "@utils/*": ["utils/*"],
-      "@contexts/*": ["contexts/*"]
+      "@contexts/*": ["contexts/*"],
+      "@slices/*": ["slices/*"]
     }
   }
 }

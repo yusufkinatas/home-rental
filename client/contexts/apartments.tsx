@@ -9,7 +9,8 @@ import {
 } from '@services/ApartmentService';
 import { Apartment } from 'types';
 import useSWRInfinite from 'swr/infinite';
-import { useProfile } from './profile';
+import { useAppSelector } from '@hooks/useAppSelector';
+import { selectUser } from '@slices/authSlice';
 
 interface IApartmentsContext {
   apartments: Apartment[];
@@ -34,7 +35,7 @@ export const ApartmentsContextProvider: FC = ({ children }) => {
   const [searchParams, setSearchParams] =
     useState<SearchApartmentQueryParams>();
 
-  const { user } = useProfile();
+  const user = useAppSelector(selectUser);
 
   const { data, isValidating, setSize, size, mutate } = useSWRInfinite<
     Apartment[]

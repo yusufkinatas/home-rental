@@ -8,7 +8,8 @@ import { AuthService } from '@services/AuthService';
 import { message } from '@utils/message';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { LocalStorageService } from '@services/LocalStorageService';
-import { useProfile } from '@contexts/profile';
+import { useAppDispatch } from '@hooks/useAppDispatch';
+import { setUser } from '@slices/authSlice';
 
 interface FormValues {
   email: string;
@@ -23,14 +24,14 @@ export const SignInForm: FC<Props> = ({ toggleForm }) => {
   const { control, handleSubmit } = useForm<FormValues>();
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  const { setUser } = useProfile();
+  const dispatch = useAppDispatch();
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
       setLoading(true);
       const { token, user } = await AuthService.signIn(data);
 
-      setUser(user);
+      dispatch(setUser(user));
       LocalStorageService.SaveObj('TOKEN', token);
       navigation.reset({ routes: [{ name: 'Drawer' }] });
     } catch (error: any) {

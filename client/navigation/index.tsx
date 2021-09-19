@@ -26,9 +26,11 @@ import { PressableOpacity } from '@components/PressableOpacity';
 import { Icon } from '@components/Icon';
 import Spacer from '@components/Spacer';
 import { View } from 'react-native';
-import { useProfile } from '@contexts/profile';
 import { LocalStorageService } from '@services/LocalStorageService';
 import { useApartments } from '@contexts/apartments';
+import { useAppSelector } from '@hooks/useAppSelector';
+import { logout, selectUser } from '@slices/authSlice';
+import { useAppDispatch } from '@hooks/useAppDispatch';
 
 export default function Navigation() {
   return (
@@ -41,7 +43,8 @@ export default function Navigation() {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
-  const { user, initialized } = useProfile();
+  const initialized = useAppSelector((state) => state.auth.initialized);
+  const user = useAppSelector(selectUser);
 
   if (!initialized) return null;
 
@@ -97,8 +100,10 @@ function RootNavigator() {
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
 function DrawerNavigator() {
-  const { user, setUser } = useProfile();
+  const user = useAppSelector(selectUser);
   const { setSearchParams } = useApartments();
+
+  const dispatch = useAppDispatch();
 
   return (
     <Drawer.Navigator
@@ -106,7 +111,7 @@ function DrawerNavigator() {
       drawerContent={(props) => (
         <CustomDrawerContent
           onLogout={() => {
-            setUser(undefined);
+            dispatch(logout());
             setSearchParams(undefined);
 
             LocalStorageService.DeleteObj('TOKEN');

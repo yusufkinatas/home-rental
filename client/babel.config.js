@@ -10,13 +10,15 @@ module.exports = function (api) {
           root: ['./'],
           alias: {
             types: './types.tsx',
+            store: './store.ts',
             '@components': './components',
             '@constants': './constants',
             '@hooks': './hooks',
             '@services': './services',
             '@screens': './screens',
             '@utils': './utils',
-            '@contexts': './contexts'
+            '@contexts': './contexts',
+            '@slices': './slices'
           }
         }
       ],

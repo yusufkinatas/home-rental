@@ -16,7 +16,7 @@ import { roleNames } from '@constants/roleNames';
 
 interface Props extends DrawerContentComponentProps {
   onLogout: () => void;
-  user?: User;
+  user: User | null;
 }
 
 export const CustomDrawerContent = ({ user, onLogout, ...rest }: Props) => {

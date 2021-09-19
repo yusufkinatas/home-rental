@@ -6,14 +6,15 @@ import { ApartmentsMap } from './ApartmentsMap';
 import { ApartmentsList } from './ApartmentsList';
 import { Button } from '@components/Button';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useProfile } from '@contexts/profile';
+import { useAppSelector } from '@hooks/useAppSelector';
+import { selectUser } from '@slices/authSlice';
 
 export const ApartmentsScreen = ({
   route: { params },
   navigation
 }: CompositeDrawerScreenProp<'Apartments'>) => {
   const { bottom: bottomInset } = useSafeAreaInsets();
-  const { user } = useProfile();
+  const user = useAppSelector(selectUser);
 
   return (
     <ScreenContainer disableDefaultPadding>
