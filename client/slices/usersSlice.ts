@@ -16,12 +16,14 @@ const usersAdapter = createEntityAdapter<User>({
   selectId: (user) => user._id
 });
 
-const initialState = usersAdapter.getInitialState({
+const extraInitialState = {
   query: '',
   isLoading: false,
   pageSize: 0,
   canFetchMore: true
-});
+};
+
+const initialState = usersAdapter.getInitialState(extraInitialState);
 
 export const searchUsers = createAsyncThunk<User[], { query: string }>(
   'users/search',
@@ -78,7 +80,8 @@ const usersSlice = createSlice({
   reducers: {
     setQuery: (state, action: PayloadAction<string>) => {
       state.query = action.payload;
-    }
+    },
+    clear: () => usersAdapter.getInitialState(extraInitialState)
   },
   extraReducers: (builder) => {
     builder.addCase(searchUsers.pending, (state) => {
@@ -134,5 +137,7 @@ export const selectUserById = (state: RootState, id: string) =>
   selectById(state.users, id);
 
 export const selectUserIds = (state: RootState) => selectIds(state.users);
+
+export const { clear: clearUserSlice } = usersSlice.actions;
 
 export const { reducer } = usersSlice;

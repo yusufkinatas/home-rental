@@ -31,6 +31,7 @@ import { useApartments } from '@contexts/apartments';
 import { useAppSelector } from '@hooks/useAppSelector';
 import { logout, selectUser } from '@slices/authSlice';
 import { useAppDispatch } from '@hooks/useAppDispatch';
+import { clearUserSlice } from '@slices/usersSlice';
 
 export default function Navigation() {
   return (
@@ -112,6 +113,7 @@ function DrawerNavigator() {
         <CustomDrawerContent
           onLogout={() => {
             dispatch(logout());
+            dispatch(clearUserSlice());
             setSearchParams(undefined);
 
             LocalStorageService.DeleteObj('TOKEN');
