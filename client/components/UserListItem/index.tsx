@@ -3,20 +3,39 @@ import { PressableOpacity } from '@components/PressableOpacity';
 import { Text } from '@components/Text';
 import { colors } from '@constants/colors';
 import { roleNames } from '@constants/roleNames';
-import _ from 'lodash';
+import { useAppDispatch } from '@hooks/useAppDispatch';
+import { useAppSelector } from '@hooks/useAppSelector';
+import { useNavigation } from '@react-navigation/core';
+import { deleteUser, selectUserById } from '@slices/usersSlice';
+import { message } from '@utils/message';
 import React, { FC, memo } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
-import { User } from 'types';
 
 interface Props {
-  user: User;
-  onEdit: () => void;
-  onDelete: () => Promise<void>;
+  id: string;
 }
 
-const _UserListItem: FC<Props> = ({ user, onEdit, onDelete }) => {
-  const { email, fullName, role } = user;
-  const roleName = roleNames[role];
+const _UserListItem: FC<Props> = ({ id }) => {
+  const user = useAppSelector((state) => selectUserById(state, id));
+  const dispatch = useAppDispatch();
+  const navigation = useNavigation();
+
+  if (!user) return null;
+
+  const onDelete = async () => {
+    const { meta } = await dispatch(deleteUser({ id }));
+    console.log(meta.requestStatus);
+
+    if (meta.requestStatus === 'rejected') {
+      return message.error('Something unexpected happened');
+    }
+
+    message.success('User deleted!');
+  };
+
+  const onEdit = () => {
+    navigation.navigate('EditUser', { user });
+  };
 
   const onMorePress = () => {
     Alert.alert(fullName, 'Choose an action', [
@@ -26,9 +45,16 @@ const _UserListItem: FC<Props> = ({ user, onEdit, onDelete }) => {
         text: 'Delete',
         onPress: onDelete
       },
-      { style: 'default', text: 'Edit', onPress: onEdit }
+      {
+        style: 'default',
+        text: 'Edit',
+        onPress: onEdit
+      }
     ]);
   };
+
+  const { email, fullName, role } = user;
+  const roleName = roleNames[role];
 
   return (
     <View style={styles.wrapper}>
@@ -52,7 +78,7 @@ const _UserListItem: FC<Props> = ({ user, onEdit, onDelete }) => {
   );
 };
 
-export const UserListItem = memo(_UserListItem, _.isEqual);
+export const UserListItem = memo(_UserListItem);
 
 const styles = StyleSheet.create({
   wrapper: {

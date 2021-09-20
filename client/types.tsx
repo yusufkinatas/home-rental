@@ -5,20 +5,18 @@ import { CompositeScreenProps } from '@react-navigation/core';
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { CreateUserParams, UpdateUserParams } from '@services/UserService';
 
 export type RootStackParamList = {
   Landing: undefined;
   Drawer: NavigatorScreenParams<DrawerParamList> | undefined;
   ApartmentDetail: { apartmentId: string };
+  ApartmentFilters: undefined;
   CreateApartment: undefined;
   EditApartment: { apartmentId: string };
-  CreateUser: { createUser: (params: CreateUserParams) => Promise<void> };
+  CreateUser: undefined;
   EditUser: {
     user: User;
-    updateUser: (id: string, params: UpdateUserParams) => Promise<void>;
   };
-  ApartmentFilters: undefined;
 };
 
 declare global {

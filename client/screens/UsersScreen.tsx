@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, TextInput } from 'react-native';
 import { ScreenContainer } from '@components/ScreenContainer';
-import { useUsers } from '@hooks/useUsers';
 import Spacer from '@components/Spacer';
 import { colors } from '@constants/colors';
 import { UserListItem } from '@components/UserListItem';
-import { message } from '@utils/message';
 import { useNavigation } from '@react-navigation/core';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@components/Button';
+import { useAppSelector } from '@hooks/useAppSelector';
+import { loadMoreUsers, searchUsers, selectUserIds } from '@slices/usersSlice';
+import { useAppDispatch } from '@hooks/useAppDispatch';
 
 export const UsersScreen = () => {
+  const { bottom: bottomInset } = useSafeAreaInsets();
+
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
 
-  const {
-    users,
-    isLoading,
-    loadMoreUsers,
-    deleteUser,
-    updateUser,
-    createUser
-  } = useUsers(searchQuery);
+  const userIds = useAppSelector(selectUserIds);
+  const isLoading = useAppSelector((state) => state.users.isLoading);
 
-  const { bottom: bottomInset } = useSafeAreaInsets();
+  useEffect(() => {
+    dispatch(searchUsers({ query: searchQuery }));
+  }, [searchQuery]);
 
   return (
     <ScreenContainer disableDefaultPadding>
@@ -36,35 +36,21 @@ export const UsersScreen = () => {
         clearButtonMode="always"
       />
       <FlatList
-        data={users}
+        data={userIds}
         keyboardDismissMode="on-drag"
         keyboardShouldPersistTaps="always"
-        keyExtractor={(user) => user._id}
-        renderItem={({ item: user }) => (
-          <UserListItem
-            user={user}
-            onEdit={() => {
-              navigation.navigate('EditUser', { user, updateUser });
-            }}
-            onDelete={async () => {
-              try {
-                await deleteUser(user._id);
-                message.success('User deleted!');
-              } catch (error) {
-                message.error('Something unexpected happened');
-              }
-            }}
-          />
-        )}
-        onEndReached={() => !isLoading && loadMoreUsers()}
+        keyExtractor={(id) => id.toString()}
+        renderItem={({ item: id }) => <UserListItem id={id.toString()} />}
+        onEndReached={() => !isLoading && dispatch(loadMoreUsers())}
         ItemSeparatorComponent={() => <Spacer height={16} />}
         contentContainerStyle={styles.contentContainer}
+        onEndReachedThreshold={0.2}
       />
       <Button
         icon="plus"
         size="l"
         style={[styles.createButton, { bottom: 16 + bottomInset }]}
-        onPress={() => navigation.navigate('CreateUser', { createUser })}
+        onPress={() => navigation.navigate('CreateUser')}
       />
     </ScreenContainer>
   );

@@ -8,6 +8,8 @@ import { ScreenProp } from 'types';
 import { Input } from '@components/Input';
 import Spacer from '@components/Spacer';
 import { Button } from '@components/Button';
+import { useAppDispatch } from '@hooks/useAppDispatch';
+import { updateUser } from '@slices/usersSlice';
 
 interface FormValues {
   email: string;
@@ -17,26 +19,28 @@ interface FormValues {
 export const EditUserScreen = ({
   navigation,
   route: {
-    params: { updateUser, user }
+    params: { user }
   }
 }: ScreenProp<'EditUser'>) => {
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: { email: user.email, fullName: user.fullName }
   });
 
+  const dispatch = useAppDispatch();
+
   const [loading, setLoading] = useState(false);
 
-  const onSubmit: SubmitHandler<FormValues> = async ({ email, fullName }) => {
-    try {
-      setLoading(true);
-      await updateUser(user._id, { email, fullName });
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    setLoading(true);
+    const { meta } = await dispatch(updateUser({ id: user._id, params: data }));
 
-      message.success('User updated!');
-      navigation.goBack();
-    } catch (error) {
+    if (meta.requestStatus === 'rejected') {
       setLoading(false);
-      message.error('Something unexpected happened');
+      return message.error('Something unexpected happened');
     }
+
+    message.success('User updated!');
+    navigation.goBack();
   };
 
   return (

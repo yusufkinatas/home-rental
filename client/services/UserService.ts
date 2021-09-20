@@ -19,29 +19,28 @@ export interface UpdateUserParams {
   fullName?: string;
 }
 
+interface SearchUserParams {
+  index: number;
+  query: string;
+}
+
 export class UserService {
-  public static getUsers = {
-    getKey: (
-      pageIndex: number,
-      previousPageData: User[] | null,
-      query?: string
-    ) => {
-      if (previousPageData && !previousPageData.length) return null;
+  public static searchUsers = async ({ query, index }: SearchUserParams) => {
+    const url = stringifyUrl(
+      {
+        url: '/search/user',
+        query: {
+          limit: 20,
+          index,
+          query
+        }
+      },
+      { skipEmptyString: true, skipNull: true }
+    );
 
-      const limit = 10;
+    const { data } = await apiClient.get<User[]>(url);
 
-      return stringifyUrl(
-        {
-          url: '/search/user',
-          query: {
-            limit,
-            index: pageIndex,
-            query
-          }
-        },
-        { skipEmptyString: true, skipNull: true }
-      );
-    }
+    return data;
   };
 
   public static createUser = async (params: CreateUserParams) => {

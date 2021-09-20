@@ -4,11 +4,14 @@ import { ScreenContainer } from '@components/ScreenContainer';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { message } from '@utils/message';
-import { ScreenProp, UserRole } from 'types';
 import { Input } from '@components/Input';
 import Spacer from '@components/Spacer';
 import { Button } from '@components/Button';
 import { Checkbox } from '@components/Checkbox';
+import { useNavigation } from '@react-navigation/core';
+import { useAppDispatch } from '@hooks/useAppDispatch';
+import { createUser } from '@slices/usersSlice';
+import { UserRole } from 'types';
 
 interface FormValues {
   email: string;
@@ -18,12 +21,10 @@ interface FormValues {
   isRealtor: boolean;
 }
 
-export const CreateUserScreen = ({
-  navigation,
-  route: {
-    params: { createUser }
-  }
-}: ScreenProp<'CreateUser'>) => {
+export const CreateUserScreen = () => {
+  const navigation = useNavigation();
+  const dispatch = useAppDispatch();
+
   const { control, handleSubmit, getValues } = useForm<FormValues>();
 
   const [loading, setLoading] = useState(false);
@@ -34,21 +35,23 @@ export const CreateUserScreen = ({
     password,
     isRealtor
   }) => {
-    try {
-      setLoading(true);
-      await createUser({
+    setLoading(true);
+    const { meta } = await dispatch(
+      createUser({
         email,
         fullName,
         password,
         role: isRealtor ? UserRole.REALTOR : UserRole.CLIENT
-      });
+      })
+    );
 
-      message.success('User created!');
-      navigation.goBack();
-    } catch (error) {
+    if (meta.requestStatus === 'rejected') {
       setLoading(false);
-      message.error('Something unexpected happened');
+      return message.error('Something unexpected happened');
     }
+
+    message.success('User created!');
+    navigation.goBack();
   };
 
   return (
