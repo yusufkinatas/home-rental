@@ -2,6 +2,8 @@ import { apiClient } from './apiClient';
 import { Apartment, Location } from 'types';
 import { stringifyUrl } from 'query-string';
 
+export const APARTMENT_FETCH_LIMIT = 10;
+
 export interface CreateApartmentParams {
   name: string;
   description: string;
@@ -27,32 +29,27 @@ export interface SearchApartmentQueryParams {
   maxFloorAreaSize?: number;
   minNumberOfRooms?: number;
   maxNumberOfRooms?: number;
+  index: number;
 }
 
 export class ApartmentService {
-  public static getApartments = {
-    getKey: (
-      pageIndex: number,
-      previousPageData: Apartment[] | null,
-      params?: SearchApartmentQueryParams
-    ) => {
-      if (previousPageData && !previousPageData.length) return null;
-      if (!params) return null;
+  public static searchApartments = async (
+    params: SearchApartmentQueryParams
+  ) => {
+    const url = stringifyUrl(
+      {
+        url: '/search/apartment',
+        query: {
+          limit: 10,
+          ...params
+        }
+      },
+      { skipEmptyString: true, skipNull: true }
+    );
 
-      const limit = 10;
+    const { data } = await apiClient.get<Apartment[]>(url);
 
-      return stringifyUrl(
-        {
-          url: '/search/apartment',
-          query: {
-            limit,
-            index: pageIndex,
-            ...params
-          }
-        },
-        { skipEmptyString: true, skipNull: true }
-      );
-    }
+    return data;
   };
 
   public static createApartment = async (params: CreateApartmentParams) => {

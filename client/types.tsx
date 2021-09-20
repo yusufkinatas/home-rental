@@ -12,7 +12,7 @@ export type RootStackParamList = {
   ApartmentDetail: { apartmentId: string };
   ApartmentFilters: undefined;
   CreateApartment: undefined;
-  EditApartment: { apartmentId: string };
+  EditApartment: { apartment: Apartment };
   CreateUser: undefined;
   EditUser: {
     user: User;

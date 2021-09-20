@@ -5,7 +5,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Checkbox } from '@components/Checkbox';
 import Spacer from '@components/Spacer';
-import { useApartments } from '@contexts/apartments';
 import { Button } from '@components/Button';
 import { SearchApartmentQueryParams } from '@services/ApartmentService';
 import { useNavigation } from '@react-navigation/core';
@@ -15,6 +14,11 @@ import { Label } from './Label';
 import { ruleMin1, ruleOnlyDigit } from '@constants/formRules';
 import { useAppSelector } from '@hooks/useAppSelector';
 import { selectUser } from '@slices/authSlice';
+import { useAppDispatch } from '@hooks/useAppDispatch';
+import {
+  searchApartments,
+  selectApartmentSearchParams
+} from '@slices/apartmentsSlice';
 
 interface FormValues {
   showOnlyMine: boolean;
@@ -27,19 +31,20 @@ interface FormValues {
 }
 
 export const ApartmentFiltersScreen = () => {
+  const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-  const { setSearchParams, searchParams } = useApartments();
+  const searchParams = useAppSelector(selectApartmentSearchParams);
   const navigation = useNavigation();
 
   const { control, handleSubmit } = useForm<FormValues>({
     defaultValues: {
-      showOnlyMine: !!searchParams?.realtorId,
-      minMonthlyPrice: searchParams?.minMonthlyPrice?.toString(),
-      maxMonthlyPrice: searchParams?.maxMonthlyPrice?.toString(),
-      minFloorAreaSize: searchParams?.minFloorAreaSize?.toString(),
-      maxFloorAreaSize: searchParams?.maxFloorAreaSize?.toString(),
-      minNumberOfRooms: searchParams?.minNumberOfRooms?.toString(),
-      maxNumberOfRooms: searchParams?.maxNumberOfRooms?.toString()
+      showOnlyMine: !!searchParams.realtorId,
+      minMonthlyPrice: searchParams.minMonthlyPrice?.toString(),
+      maxMonthlyPrice: searchParams.maxMonthlyPrice?.toString(),
+      minFloorAreaSize: searchParams.minFloorAreaSize?.toString(),
+      maxFloorAreaSize: searchParams.maxFloorAreaSize?.toString(),
+      minNumberOfRooms: searchParams.minNumberOfRooms?.toString(),
+      maxNumberOfRooms: searchParams.maxNumberOfRooms?.toString()
     }
   });
 
@@ -47,7 +52,7 @@ export const ApartmentFiltersScreen = () => {
     showOnlyMine,
     ...rest
   }) => {
-    const newParams: SearchApartmentQueryParams = {
+    const newParams: Omit<SearchApartmentQueryParams, 'index'> = {
       realtorId: showOnlyMine ? user?._id : ''
     };
 
@@ -57,7 +62,7 @@ export const ApartmentFiltersScreen = () => {
       newParams[key as keyof typeof rest] = val || undefined;
     });
 
-    setSearchParams((oldParams) => ({ ...oldParams, ...newParams }));
+    dispatch(searchApartments(newParams));
     navigation.goBack();
   };
 

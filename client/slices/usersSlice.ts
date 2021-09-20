@@ -7,7 +7,8 @@ import {
 import {
   CreateUserParams,
   UpdateUserParams,
-  UserService
+  UserService,
+  USER_FETCH_LIMIT
 } from '@services/UserService';
 import { RootState } from 'store';
 import { User } from 'types';
@@ -90,7 +91,7 @@ const usersSlice = createSlice({
     builder.addCase(searchUsers.fulfilled, (state, action) => {
       state.isLoading = false;
       state.pageSize = 1;
-      state.canFetchMore = action.payload.length === 20;
+      state.canFetchMore = action.payload.length === USER_FETCH_LIMIT;
 
       usersAdapter.setAll(state, action.payload);
     });
@@ -106,7 +107,7 @@ const usersSlice = createSlice({
 
     builder.addCase(loadMoreUsers.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.canFetchMore = action.payload.length === 20;
+      state.canFetchMore = action.payload.length === USER_FETCH_LIMIT;
 
       usersAdapter.addMany(state, action.payload);
     });

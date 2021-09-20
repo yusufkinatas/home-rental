@@ -10,10 +10,11 @@ import Spacer from '@components/Spacer';
 import { InfoRow } from './InfoRow';
 import { colors } from '@constants/colors';
 import { formatDate } from '@utils/formatDate';
-import { useApartments } from '@contexts/apartments';
 import { message } from '@utils/message';
 import { useAppSelector } from '@hooks/useAppSelector';
 import { selectUser } from '@slices/authSlice';
+import { deleteApartment, selectApartmentById } from '@slices/apartmentsSlice';
+import { useAppDispatch } from '@hooks/useAppDispatch';
 
 export const ApartmentDetailScreen = ({
   navigation,
@@ -21,35 +22,13 @@ export const ApartmentDetailScreen = ({
     params: { apartmentId }
   }
 }: ScreenProp<'ApartmentDetail'>) => {
+  const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-  const { findApartmentById, deleteApartment } = useApartments();
-  const apartment = findApartmentById(apartmentId);
+  const apartment = useAppSelector((state) =>
+    selectApartmentById(state, apartmentId)
+  );
 
   const [deleteLoading, setDeleteLoading] = useState(false);
-
-  const onDelete = () => {
-    const _deleteApartment = async () => {
-      try {
-        setDeleteLoading(true);
-        await deleteApartment(apartmentId);
-
-        message.success('Apartment deleted!');
-        navigation.goBack();
-      } catch (error) {
-        setDeleteLoading(false);
-        message.error('Something unexpected happened');
-      }
-    };
-
-    Alert.alert(
-      'Are you sure to delete this apartment?',
-      'You cannot take this action back',
-      [
-        { style: 'cancel', text: 'Cancel' },
-        { style: 'destructive', text: 'Delete', onPress: _deleteApartment }
-      ]
-    );
-  };
 
   if (!apartment) return null;
 
@@ -67,6 +46,30 @@ export const ApartmentDetailScreen = ({
   const canEditApartment =
     user?.role === UserRole.ADMIN ||
     (user?.role === UserRole.REALTOR && user._id === apartment.realtorId);
+
+  const onDelete = () => {
+    const _deleteApartment = async () => {
+      setDeleteLoading(true);
+      const { meta } = await dispatch(deleteApartment({ id: apartmentId }));
+
+      if (meta.requestStatus === 'rejected') {
+        setDeleteLoading(false);
+        return message.error('Something unexpected happened');
+      }
+
+      message.success('Apartment deleted!');
+      navigation.goBack();
+    };
+
+    Alert.alert(
+      'Are you sure to delete this apartment?',
+      'You cannot take this action back',
+      [
+        { style: 'cancel', text: 'Cancel' },
+        { style: 'destructive', text: 'Delete', onPress: _deleteApartment }
+      ]
+    );
+  };
 
   return (
     <ScreenContainer disableDefaultPadding>
@@ -139,7 +142,7 @@ export const ApartmentDetailScreen = ({
                 title="Edit"
                 style={styles.button}
                 onPress={() =>
-                  navigation.navigate('EditApartment', { apartmentId })
+                  navigation.navigate('EditApartment', { apartment })
                 }
               />
             </View>

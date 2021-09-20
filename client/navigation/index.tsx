@@ -27,11 +27,11 @@ import { Icon } from '@components/Icon';
 import Spacer from '@components/Spacer';
 import { View } from 'react-native';
 import { LocalStorageService } from '@services/LocalStorageService';
-import { useApartments } from '@contexts/apartments';
 import { useAppSelector } from '@hooks/useAppSelector';
 import { logout, selectUser } from '@slices/authSlice';
 import { useAppDispatch } from '@hooks/useAppDispatch';
 import { clearUserSlice } from '@slices/usersSlice';
+import { clearApartmentSlice } from '@slices/apartmentsSlice';
 
 export default function Navigation() {
   return (
@@ -102,7 +102,6 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 
 function DrawerNavigator() {
   const user = useAppSelector(selectUser);
-  const { setSearchParams } = useApartments();
 
   const dispatch = useAppDispatch();
 
@@ -114,7 +113,7 @@ function DrawerNavigator() {
           onLogout={() => {
             dispatch(logout());
             dispatch(clearUserSlice());
-            setSearchParams(undefined);
+            dispatch(clearApartmentSlice());
 
             LocalStorageService.DeleteObj('TOKEN');
             props.navigation.reset({ routes: [{ name: 'Landing' }] });

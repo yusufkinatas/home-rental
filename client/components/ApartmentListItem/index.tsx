@@ -1,18 +1,21 @@
 import { PressableOpacity } from '@components/PressableOpacity';
 import { Text } from '@components/Text';
 import { colors } from '@constants/colors';
+import { useAppSelector } from '@hooks/useAppSelector';
 import { useNavigation } from '@react-navigation/core';
-import _ from 'lodash';
+import { selectApartmentById } from '@slices/apartmentsSlice';
 import React, { FC, memo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Apartment } from 'types';
 
 interface Props {
-  apartment: Apartment;
+  id: string;
 }
 
-const _ApartmentListItem: FC<Props> = ({ apartment }) => {
+const _ApartmentListItem: FC<Props> = ({ id }) => {
   const navigation = useNavigation();
+  const apartment = useAppSelector((state) => selectApartmentById(state, id));
+
+  if (!apartment) return null;
 
   return (
     <PressableOpacity
@@ -36,7 +39,7 @@ const _ApartmentListItem: FC<Props> = ({ apartment }) => {
   );
 };
 
-export const ApartmentListItem = memo(_ApartmentListItem, _.isEqual);
+export const ApartmentListItem = memo(_ApartmentListItem);
 
 const styles = StyleSheet.create({
   wrapper: {

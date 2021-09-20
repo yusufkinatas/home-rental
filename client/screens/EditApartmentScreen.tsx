@@ -12,8 +12,9 @@ import { Location, ScreenProp } from 'types';
 import { MapMarker } from '@components/MapMarker';
 import { PickLocationModal } from '@components/PickLocationModal';
 import { Checkbox } from '@components/Checkbox';
-import { useApartments } from '@contexts/apartments';
 import { ruleMin1, ruleOnlyDigit } from '@constants/formRules';
+import { useAppDispatch } from '@hooks/useAppDispatch';
+import { updateApartment } from '@slices/apartmentsSlice';
 
 interface FormValues {
   name: string;
@@ -28,11 +29,10 @@ interface FormValues {
 export const EditApartmentScreen = ({
   navigation,
   route: {
-    params: { apartmentId }
+    params: { apartment }
   }
 }: ScreenProp<'EditApartment'>) => {
-  const { findApartmentById, updateApartment } = useApartments();
-  const apartment = findApartmentById(apartmentId);
+  const dispatch = useAppDispatch();
 
   const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
     defaultValues: {
@@ -63,27 +63,29 @@ export const EditApartmentScreen = ({
     monthlyPrice,
     isRented
   }) => {
-    if (!apartment) return;
+    setLoading(true);
+    const { meta } = await dispatch(
+      updateApartment({
+        id: apartment._id,
+        params: {
+          location: location,
+          name: name,
+          description: description,
+          floorAreaSize: parseInt(floorAreaSize),
+          numberOfRooms: parseInt(numberOfRooms),
+          monthlyPrice: parseInt(monthlyPrice),
+          isRented
+        }
+      })
+    );
 
-    try {
-      setLoading(true);
-
-      await updateApartment(apartment._id, {
-        location: location,
-        name: name,
-        description: description,
-        floorAreaSize: parseInt(floorAreaSize),
-        numberOfRooms: parseInt(numberOfRooms),
-        monthlyPrice: parseInt(monthlyPrice),
-        isRented
-      });
-
-      message.success('Apartment updated!');
-      navigation.goBack();
-    } catch (error) {
+    if (meta.requestStatus === 'rejected') {
       setLoading(false);
-      message.error('Something unexpected happened');
+      return message.error('Something unexpected happened');
     }
+
+    message.success('Apartment updated!');
+    navigation.goBack();
   };
 
   const onLocationSelect = (location: Location) => {

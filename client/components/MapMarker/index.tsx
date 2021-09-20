@@ -2,8 +2,7 @@ import Spacer from '@components/Spacer';
 import { Text } from '@components/Text';
 import { colors } from '@constants/colors';
 import { layout } from '@constants/layout';
-import _ from 'lodash';
-import React, { FC, memo } from 'react';
+import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { LatLng, Marker } from 'react-native-maps';
 
@@ -14,7 +13,7 @@ interface Props {
   color?: string;
 }
 
-const _MapMarker: FC<Props> = ({
+export const MapMarker: FC<Props> = ({
   coordinate,
   title,
   onPress,
@@ -38,10 +37,6 @@ const _MapMarker: FC<Props> = ({
     </Marker>
   );
 };
-
-export const MapMarker = memo(_MapMarker, (p, n) =>
-  _.isEqualWith(_.omit(p, 'onPress'), _.omit(n, 'onPress'))
-);
 
 const styles = StyleSheet.create({
   titleContainer: {

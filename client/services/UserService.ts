@@ -2,6 +2,8 @@ import { apiClient } from './apiClient';
 import { User, UserRole } from 'types';
 import { stringifyUrl } from 'query-string';
 
+export const USER_FETCH_LIMIT = 20;
+
 export interface CreateUserParams {
   email: string;
   password: string;
@@ -30,7 +32,7 @@ export class UserService {
       {
         url: '/search/user',
         query: {
-          limit: 20,
+          limit: USER_FETCH_LIMIT,
           index,
           query
         }

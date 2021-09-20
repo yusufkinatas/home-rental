@@ -12,8 +12,9 @@ import { Location } from 'types';
 import { MapMarker } from '@components/MapMarker';
 import { PickLocationModal } from '@components/PickLocationModal';
 import { useNavigation } from '@react-navigation/core';
-import { useApartments } from '@contexts/apartments';
 import { ruleMin1, ruleOnlyDigit } from '@constants/formRules';
+import { useAppDispatch } from '@hooks/useAppDispatch';
+import { createApartment } from '@slices/apartmentsSlice';
 
 interface FormValues {
   name: string;
@@ -25,6 +26,8 @@ interface FormValues {
 }
 
 export const CreateApartmentScreen = () => {
+  const dispatch = useAppDispatch();
+
   const { control, handleSubmit, watch, setValue } = useForm<FormValues>({});
   const location = watch('location');
   const navigation = useNavigation();
@@ -34,7 +37,6 @@ export const CreateApartmentScreen = () => {
 
   const showModal = () => setModalVisible(true);
   const hideModal = () => setModalVisible(false);
-  const { createApartment } = useApartments();
 
   const onSubmit: SubmitHandler<FormValues> = async ({
     location,
@@ -44,23 +46,25 @@ export const CreateApartmentScreen = () => {
     numberOfRooms,
     monthlyPrice
   }) => {
-    try {
-      setLoading(true);
-      await createApartment({
+    setLoading(true);
+    const { meta } = await dispatch(
+      createApartment({
         location: location,
         name: name,
         description: description,
         floorAreaSize: parseInt(floorAreaSize),
         numberOfRooms: parseInt(numberOfRooms),
         monthlyPrice: parseInt(monthlyPrice)
-      });
+      })
+    );
 
-      message.success('Apartment created!');
-      navigation.goBack();
-    } catch (error) {
+    if (meta.requestStatus === 'rejected') {
       setLoading(false);
-      message.error('Something unexpected happened');
+      return message.error('Something unexpected happened');
     }
+
+    message.success('Apartment created!');
+    navigation.goBack();
   };
 
   const onLocationSelect = (location: Location) => {
