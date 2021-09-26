@@ -17,6 +17,7 @@ export type RootStackParamList = {
   EditUser: {
     user: User;
   };
+  Chat: { conversationId: string };
 };
 
 declare global {
@@ -69,4 +70,5 @@ export interface Apartment {
   dateAdded: string;
   isRented: boolean;
   realtorId: string;
+  realtor: User;
 }

@@ -32,6 +32,7 @@ import { logout, selectUser } from '@slices/authSlice';
 import { useAppDispatch } from '@hooks/useAppDispatch';
 import { clearUserSlice } from '@slices/usersSlice';
 import { clearApartmentSlice } from '@slices/apartmentsSlice';
+import { ChatScreen } from '@screens/ChatScreen';
 
 export default function Navigation() {
   return (
@@ -93,6 +94,7 @@ function RootNavigator() {
           component={EditUserScreen}
           options={{ title: 'Edit User' }}
         />
+        <Stack.Screen name="Chat" component={ChatScreen} />
       </Stack.Group>
     </Stack.Navigator>
   );

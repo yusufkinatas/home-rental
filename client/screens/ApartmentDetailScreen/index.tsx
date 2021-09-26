@@ -71,6 +71,10 @@ export const ApartmentDetailScreen = ({
     );
   };
 
+  const onMessage = () => {
+    navigation.navigate('Chat', { conversationId: '123' });
+  };
+
   return (
     <ScreenContainer disableDefaultPadding>
       <ScrollView>
@@ -146,6 +150,13 @@ export const ApartmentDetailScreen = ({
                 }
               />
             </View>
+          )}
+
+          {apartment.realtorId !== user?._id && (
+            <>
+              <Spacer height={16} />
+              <Button title="Message Realtor" onPress={onMessage} />
+            </>
           )}
         </View>
       </ScrollView>
