@@ -166,13 +166,10 @@ const apartmentsSlice = createSlice({
   }
 });
 
-const { selectIds, selectById } = apartmentsAdapter.getSelectors();
-
-export const selectApartmentById = (state: RootState, id: string) =>
-  selectById(state.apartments, id);
-
-export const selectApartmentIds = (state: RootState) =>
-  selectIds(state.apartments);
+export const {
+  selectIds: selectApartmentIds,
+  selectById: selectApartmentById
+} = apartmentsAdapter.getSelectors((state: RootState) => state.apartments);
 
 export const selectApartmentSearchParams = (state: RootState) =>
   state.apartments.searchParams;

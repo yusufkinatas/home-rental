@@ -132,12 +132,8 @@ const usersSlice = createSlice({
   }
 });
 
-const { selectIds, selectById } = usersAdapter.getSelectors();
-
-export const selectUserById = (state: RootState, id: string) =>
-  selectById(state.users, id);
-
-export const selectUserIds = (state: RootState) => selectIds(state.users);
+export const { selectIds: selectUserIds, selectById: selectUserById } =
+  usersAdapter.getSelectors((state: RootState) => state.users);
 
 export const { clear: clearUserSlice } = usersSlice.actions;
 
