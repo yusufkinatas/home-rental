@@ -33,6 +33,7 @@ import { useAppDispatch } from '@hooks/useAppDispatch';
 import { clearUserSlice } from '@slices/usersSlice';
 import { clearApartmentSlice } from '@slices/apartmentsSlice';
 import { ChatScreen } from '@screens/ChatScreen';
+import { ConversationsScreen } from '@screens/ConversationsScreen';
 
 export default function Navigation() {
   return (
@@ -171,6 +172,15 @@ function DrawerNavigator() {
           }}
         />
       )}
+
+      <Drawer.Screen
+        name="Conversations"
+        component={ConversationsScreen}
+        options={{
+          title: 'Messages',
+          drawerIcon: (props) => <DrawerIcon name="commenting" {...props} />
+        }}
+      />
     </Drawer.Navigator>
   );
 }

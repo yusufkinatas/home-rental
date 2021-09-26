@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { ScreenContainer } from '@components/ScreenContainer';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 import { useAppSelector } from '@hooks/useAppSelector';
 import { selectUser } from '@slices/authSlice';
 import { useAppDispatch } from '@hooks/useAppDispatch';
 import { ScreenProp } from 'types';
-import { Message } from './Message';
 import Spacer from '@components/Spacer';
+import { MessageListItem } from './MessageListItem';
 
 export const ChatScreen = ({
   navigation,
@@ -24,20 +24,18 @@ export const ChatScreen = ({
 
   return (
     <ScreenContainer disableDefaultPadding>
-      <KeyboardAwareScrollView
+      <KeyboardAwareFlatList
+        data={Array(10)}
+        keyExtractor={(_, i) => i.toString()}
+        ItemSeparatorComponent={() => <Spacer height={16} />}
+        renderItem={() => <MessageListItem />}
+        //
         enableAutomaticScroll
         contentContainerStyle={styles.contentContainer}
         keyboardDismissMode="none"
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
-      >
-        <FlatList
-          data={Array(10)}
-          keyExtractor={(_, i) => i.toString()}
-          ItemSeparatorComponent={() => <Spacer height={16} />}
-          renderItem={() => <Message />}
-        />
-      </KeyboardAwareScrollView>
+      />
     </ScreenContainer>
   );
 };

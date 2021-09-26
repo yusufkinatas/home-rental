@@ -29,6 +29,7 @@ declare global {
 export type DrawerParamList = {
   Apartments: { view: 'map' | 'list' };
   Users: undefined;
+  Conversations: undefined;
 };
 
 export type CompositeDrawerScreenProp<Screen extends keyof DrawerParamList> =

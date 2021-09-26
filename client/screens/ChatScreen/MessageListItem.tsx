@@ -3,7 +3,7 @@ import { colors } from '@constants/colors';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-export const Message = () => {
+export const MessageListItem = () => {
   const sentByUser = true;
 
   return (
